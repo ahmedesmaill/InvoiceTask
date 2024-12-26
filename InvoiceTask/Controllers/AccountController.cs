@@ -89,18 +89,18 @@ namespace InvoiceTask.Controllers
             return View(user);
         }
 
-        public IActionResult VerifyEmail(string token)
-        {
-            try
-            {
-                userService.VerifyEmail(token);
-                return RedirectToAction("Login");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //public IActionResult VerifyEmail(string token)
+        //{
+        //    try
+        //    {
+        //        userService.VerifyEmail(token);
+        //        return RedirectToAction("Login");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
 
         // Handle user logout

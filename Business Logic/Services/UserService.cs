@@ -39,10 +39,10 @@ namespace Business_Logic.Services
                 user.VerificationToken = Guid.NewGuid().ToString();
                 userRepository.Create(user);
                 userRepository.Commit();
-                string verificationUrl = $"https://yourwebsite.com/verify?token={user.VerificationToken}";
-                string subject = "Account Verification";
-                string message = $"Please click <a href='{verificationUrl}'>here</a> to verify your account.";
-                emailService.SendEmailAsync(user.Email, subject, message).Wait();
+                //string verificationUrl = $"https://yourwebsite.com/verify?token={user.VerificationToken}";
+                //string subject = "Account Verification";
+                //string message = $"Please click <a href='{verificationUrl}'>here</a> to verify your account.";
+                //emailService.SendEmailAsync(user.Email, subject, message).Wait();
         }
             
         
