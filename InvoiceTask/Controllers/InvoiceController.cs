@@ -41,25 +41,26 @@ namespace InvoiceTask.Controllers
             var invoice = invoiceService.GetInvoiceById(id);
             if (invoice == null)
             {
-                return NotFound(); // Invoice not found
+                return NotFound();
             }
 
-            // Map invoice data to InvoiceVM
+            // Map to ViewModel
             var invoiceVM = new InvoiceVM
             {
                 InvoiceId = invoice.InvoiceId,
                 Date = invoice.Date ?? DateTime.Now,
                 TotalAmount = invoice.TotalAmount ?? 0,
-                Items = invoice.InvoiceDetails.Select(d => new InvoiceItemVM
+                Items = invoice.InvoiceDetails.Select(detail => new InvoiceItemVM
                 {
-                    Product = d.Product,
-                    Quantity = d.Quantity ?? 0,
-                    Price = d.Price ?? 0
+                    Product = detail.Product,
+                    Quantity = detail.Quantity ?? 0,
+                    Price = detail.Price ?? 0
                 }).ToList()
             };
 
             return View(invoiceVM);
         }
+        
 
         // POST: Invoice/Edit/5
         [HttpPost]
@@ -68,37 +69,39 @@ namespace InvoiceTask.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Check if at least one item is provided in the invoice
-                if (invoiceVM.Items == null || !invoiceVM.Items.Any())
+                try
                 {
-                    ModelState.AddModelError("", "You must add at least one item to the invoice.");
-                    return View(invoiceVM);
+                    // Update invoice via the service
+                    invoiceService.UpdateInvoice(invoiceVM);
+                    return RedirectToAction(nameof(Index)); // Redirect to avoid duplication on refresh
                 }
-
-                // Map InvoiceVM to Invoice model
-                var invoice = new Invoice
+                catch (ArgumentException ex)
                 {
-                    InvoiceId = invoiceVM.InvoiceId,
-                    Date = invoiceVM.Date,
-                    TotalAmount = invoiceVM.TotalAmount,
-                    InvoiceDetails = invoiceVM.Items.Select(item => new InvoiceDetail
-                    {
-                        Product = item.Product,
-                        Quantity = item.Quantity,
-                        Price = item.Price
-                    }).ToList()
-                };
-
-                // Update the invoice
-                invoiceService.UpdateInvoice(invoice);
-
-                return RedirectToAction(nameof(Index)); // Redirect to the Index page after successful update
+                    ModelState.AddModelError("", ex.Message);
+                }
             }
 
-            // If model validation fails, return the view with the current invoice data
-            return View(invoiceVM);
+            // If validation fails, ensure the model is not duplicated
+            if (invoiceVM.Items == null || !invoiceVM.Items.Any())
+            {
+                invoiceVM.Items = new List<InvoiceItemVM>(); // Prevent null or empty items
+            }
+
+            return View(invoiceVM); // Return the model as-is
         }
 
+        public IActionResult Details(int invoiceId) 
+        {
+            var invoice = invoiceService.GetInvoiceById(invoiceId);
+
+            if (invoice == null)
+            {
+                return NotFound(); // Handle when invoice is not found
+            }
+
+            return View(invoice);
+        }
+        
         public IActionResult Delete(int invoiceId)
         {
             var invoice = invoiceService.GetInvoiceById(invoiceId);

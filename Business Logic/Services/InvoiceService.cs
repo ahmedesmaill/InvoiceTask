@@ -45,9 +45,9 @@ namespace Business_Logic.Services
                 }).ToList()
             };
         }
-        public InvoiceDetail? GetInvoiceDetailById(int id)
+        public Invoice? GetInvoiceDetailById(int id)
         {
-            var invoiceDetail = detailRepository.GetOne( expression: i => i.Id == id);
+            var invoiceDetail = invoiceRepository.GetOne(includeProps:[ e => e.InvoiceDetails] , expression: i => i.InvoiceId == id);
             if (invoiceDetail == null) return null;
             return invoiceDetail;
         }
@@ -69,14 +69,41 @@ namespace Business_Logic.Services
             invoiceRepository.Commit();
         }
 
-        public void UpdateInvoice(Invoice invoice)
+        public void UpdateInvoice(InvoiceVM invoiceVM)
         {
-            
-            
-                invoiceRepository.Edit(invoice);
-                invoiceRepository.Commit();
-            
+            if (invoiceVM.Items == null || !invoiceVM.Items.Any())
+            {
+                throw new ArgumentException("You must add at least one item to the invoice.");
+            }
+
+            // Fetch the existing invoice including its details
+            var invoice = invoiceRepository.GetOne(expression: i => i.InvoiceId == invoiceVM.InvoiceId, includeProps: [e => e.InvoiceDetails]);
+            if (invoice == null)
+            {
+                throw new ArgumentException("Invoice not found.");
+            }
+
+            // Update invoice fields
+            invoice.Date = invoiceVM.Date;
+            invoice.TotalAmount = invoiceVM.TotalAmount;
+
+            // Clear the existing InvoiceDetails from the database
+            invoice.InvoiceDetails.Clear();
+
+            // Add the updated InvoiceDetails from the view model
+            invoice.InvoiceDetails.AddRange(invoiceVM.Items.Select(item => new InvoiceDetail
+            {
+                Product = item.Product,
+                Quantity = item.Quantity,
+                Price = item.Price
+            }));
+
+            // Save changes to the database
+            invoiceRepository.Edit(invoice);
+            invoiceRepository.Commit();
         }
+
+
 
         public void DeleteInvoice(int id)
         {

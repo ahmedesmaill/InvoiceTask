@@ -143,6 +143,20 @@
             $('#invoiceItems tbody tr').each(function () {
                 recalculateItemTotal($(this));
             });
+
+                    $(document).ready(function () {
+            const seenProducts = new Set();
+
+            $('#invoiceItems tbody tr').each(function () {
+                const product = $(this).find('.product').val();
+                if (seenProducts.has(product)) {
+                    $(this).remove(); // Remove duplicate row
+                } else {
+                    seenProducts.add(product);
+                }
+            });
+        });
+
             recalculateTotalAmount();
         });
     </script>

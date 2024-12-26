@@ -13,9 +13,9 @@ namespace Business_Logic.Services.IServices
         IEnumerable<Invoice> GetAllInvoices();
         Invoice? GetInvoiceById(int id);
        
-        InvoiceDetail? GetInvoiceDetailById(int id);
+        Invoice? GetInvoiceDetailById(int id);
         void CreateInvoice(InvoiceVM invoiceVM);
-        void UpdateInvoice(Invoice invoice);
+        void UpdateInvoice(InvoiceVM invoiceVM);
         void DeleteInvoice(int id);
       
     }
