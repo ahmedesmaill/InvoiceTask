@@ -1,7 +1,27 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@{
     ViewData["Title"] = "Home Page";
 }
+@inject IViewLocalizer localizer
+
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">@localizer["home_title"]</h1>
+   
+    
+</div>
+
+<!-- Manage Invoices Section -->
+<div class="text-center mt-5">
+    
+    @if (Context.Session.GetString("UserLoggedIn") != null)
+    {
+        <h2>@localizer["Manage_Your_Invoice"]</h2>
+        <p>
+            @localizer["home_body"]
+        </p>
+        
+        <a class="btn btn-primary" asp-area="" asp-controller="Invoice" asp-action="Index">@localizer["Manage_Invoice"]</a>
+    }
 </div>

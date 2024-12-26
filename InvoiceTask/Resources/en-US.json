@@ -28,6 +28,19 @@
   "actions": "Actions",
   "show_details": "Show Details",
   "edit": "Edit",
+  "edit_invoice": "Edit Invoice",
   "delete": "Delete",
-  "Manage_Invoice": "Manage Invoices"
+  "Manage_Invoice": "Manage Invoices",
+  "Manage_Your_Invoice": "Manage Your Invoices Now",
+  "home_title": "Welcome to Invoices Management",
+  "home_body": " Use the following button to navigate to the invoice management section. From there, you can view, create, and manage all your invoices with ease.,",
+  "invoice_details": "Invoice Details",
+  "product": "Product",
+  "quantity": "Quantity",
+  "price": "Price",
+  "total": "Total",
+  "items": "Items",
+  "addItem": "Add Item",
+  "alert": "You must add at least one item to the invoice.",
+  "back_to_list": "Back to List"
 }

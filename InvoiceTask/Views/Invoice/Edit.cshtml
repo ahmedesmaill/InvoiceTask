@@ -1,11 +1,12 @@
-﻿@model Data_Access.ViewModels.InvoiceVM
-
-<h2 class="text-center mb-4">Edit Invoice</h2>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model Data_Access.ViewModels.InvoiceVM
+@inject IViewLocalizer Localizer
+<h2 class="text-center mb-4">@Localizer["edit_invoice"]</h2>
 <form id="invoiceForm" asp-action="Edit" method="post">
     <input type="hidden" asp-for="InvoiceId" />
 
     <div class="form-group row">
-        <label for="Date" class="col-sm-1 col-form-label">Date</label>
+        <label for="Date" class="col-sm-1 col-form-label">@Localizer["date"]</label>
         <div class="col-sm-4">
             <input type="date" asp-for="Date" min="@DateTime.Now.ToString("yyyy-MM-dd")" value="@Model.Date.ToString("yyyy-MM-dd")" class="form-control" />
             <span asp-validation-for="Date" class="text-danger"></span>
@@ -13,15 +14,15 @@
     </div>
 
     <div id="invoiceItems" class="mt-4">
-        <h3>Items</h3>
+        <h3>@Localizer["items"]</h3>
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Total</th>
-                    <th>Actions</th>
+                    <th>@Localizer["product"]</th>
+                    <th>@Localizer["quantity"]</th>
+                    <th>@Localizer["price"]</th>
+                    <th>@Localizer["total"]</th>
+                    <th>@Localizer["actions"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -46,7 +47,7 @@
                                 <input type="text" class="form-control item-total" readonly value="0.00" />
                             </td>
                             <td>
-                                <button type="button" class="btn btn-danger remove-row">Remove</button>
+                                <button type="button" class="btn btn-danger remove-row">@Localizer["delete"]</button>
                             </td>
                         </tr>
                     }
@@ -54,18 +55,18 @@
             </tbody>
         </table>
 
-        <button type="button" class="btn btn-primary" id="addRow">Add Item</button>
+        <button type="button" class="btn btn-primary" id="addRow">@Localizer["addItem"]</button>
     </div>
 
     <div class="form-group mt-4">
-        <label for="TotalAmount">Total Amount:</label>
+        <label for="TotalAmount">@Localizer["total_amount"]:</label>
         <input type="text" asp-for="TotalAmount" id="totalAmount" class="form-control" readonly value="@Model.TotalAmount.ToString("F2")" />
     </div>
 
-    <div class="text-danger" id="error-message" style="display: none;">You must add at least one item to the invoice.</div>
+    <div class="text-danger" id="error-message" style="display: none;">@Localizer["alert"].</div>
 
     <div class="form-group mt-4">
-        <button type="submit" class="btn btn-success btn-block">Update</button>
+        <button type="submit" class="btn btn-success btn-block">@Localizer["edit"]</button>
     </div>
 </form>
 

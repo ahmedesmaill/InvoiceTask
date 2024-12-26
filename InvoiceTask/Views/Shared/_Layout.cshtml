@@ -43,12 +43,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">@localizer["privacy"]</a>
                         </li>
-                        @if (Context.Session.GetString("UserLoggedIn") != null)
-                        {
-                            <li class="nav-item m-1">
-                                <a class="btn btn-primary" asp-area="" asp-controller="Invoice" asp-action="Index">@localizer["Manage_Invoice"]</a>
-                            </li>
-                        }
+                       
                     </ul>
                     <ul class="navbar-nav">
                          @if (Context.Session.GetString("UserLoggedIn") != null) 
