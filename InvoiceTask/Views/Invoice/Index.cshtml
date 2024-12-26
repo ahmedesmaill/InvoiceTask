@@ -1,0 +1,86 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model IEnumerable<Data_Access.Models.Invoice>
+
+@inject IViewLocalizer Localizer
+<div class="row align-items-center mb-4">
+    <div class="col-md-9">
+        <h2 class="text-primary">@Localizer["AllInvoice"]</h2>
+    </div>
+    <div class="col-md-3 text-end">
+        <a href="/Invoice/Create" type="button" class="btn btn-success shadow-sm"><i class="bi bi-plus-circle"></i>  @Localizer["create_new_invoice"]</a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle table-bordered shadow">
+        <thead class="table-dark text-center">
+            <tr>
+                <th>@Localizer["invoice_id"]</th>
+                <th>@Localizer["date"]</th>
+                <th>@Localizer["total_amount"]</th>
+                <th>@Localizer["actions"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var invoice in Model)
+            {
+                <tr>
+                    <td>@invoice.InvoiceId</td>
+                    <td>@(invoice.Date.HasValue ? invoice.Date.Value.ToString("yyyy-MM-dd") : "N/A")</td>
+                    <td>@invoice.TotalAmount</td>
+                    <td class="text-center">
+                        <a class="btn btn-primary btn-sm shadow-sm m-1" href="/Invoice/Details/@invoice.InvoiceId">@Localizer["show_details"]</a>
+                        <a class="btn btn-warning btn-sm shadow-sm m-1" href="/Invoice/Edit?id=@invoice.InvoiceId"><i class="bi bi-pencil-square"></i> @Localizer["edit"]</a>
+                        <button class="btn btn-danger btn-sm shadow-sm m-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="@invoice.InvoiceId">
+                            <i class="bi bi-trash3"></i> @Localizer["delete"]
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this invoice? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="post">
+                    <input type="hidden" name="InvoiceId" id="deleteInvoiceId" />
+                    <button type="submit" class="btn btn-danger">Confirm Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const confirmDeleteModal = document.getElementById("confirmDeleteModal");
+            const deleteForm = document.getElementById("deleteForm");
+            const deleteInvoiceId = document.getElementById("deleteInvoiceId");
+
+            // Attach event listener for the modal buttons
+            confirmDeleteModal.addEventListener("show.bs.modal", function (event) {
+                const button = event.relatedTarget; // Button that triggered the modal
+                const invoiceId = button.getAttribute("data-id"); // Extract info from data-id attribute
+
+                // Update the hidden input value with the invoice ID
+                deleteInvoiceId.value = invoiceId;
+
+                // Update the form action to include the correct invoice ID
+                deleteForm.action = `/Invoice/Delete/${invoiceId}`;
+            });
+        });
+    </script>
+}

@@ -1,0 +1,52 @@
+﻿@using Data_Access.Models
+@using Microsoft.AspNetCore.Mvc.Localization
+@model User
+
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = @Localizer["Login"];
+}
+
+<h1 class="text-center text-primary mb-4">@ViewData["Title"]</h1>
+
+<div class="container">
+    <div class="row justify-content-center ">
+        <div class="col-md-6 login-container">
+            <form id="loginForm" method="post" class="needs-validation" novalidate>
+                @Html.AntiForgeryToken()
+
+                <div class="text-center mb-3">
+                    <h2 class="login-heading"> @Localizer["Welcome"]</h2>
+                    <p class="login-subheading">@Localizer["LoginNav"]</p>
+                </div>
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-check-label mb-3">
+                    <label for="Username">@Localizer["Username"]</label>
+                    <input asp-for="Username" class="form-control" />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+
+                <div class="form-check-label mb-3">
+                    <label for="Password">@Localizer["Password"]</label>
+                    <input asp-for="Password" type="password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 btn-lg login-btn">@Localizer["Login"]</button>
+
+                <div class="text-center mt-3">
+                    
+                    <br />
+                    <a class="link-secondary" asp-area="" asp-controller="Account" asp-action="Register">@Localizer["RegisterNav"]</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,86 @@
+﻿@using Data_Access.Models
+@using Microsoft.AspNetCore.Mvc.Localization
+@model User
+@inject IViewLocalizer Localizer
+<div class="register-container">
+    <div class="card p-4 col-lg-5 col-md-7 col-sm-12">
+        <div class="card-body">
+            <h2 class="text-center mb-4">@Localizer["Register"]</h2>
+            <form  asp-action="Register" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-check-label mb-3">
+                    <label for="FullName"><i class="bi bi-person"></i>@Localizer["FullName"]</label>
+                    <input asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <div class="form-check-label mb-3">
+                    <label for="Username"><i class="bi bi-person"></i>@Localizer["Username"]</label>
+                    <input asp-for="Username" class="form-control" />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+
+                <div class="form-check-label mb-3">
+                    <label for="Email"><i class="bi bi-envelope-fill me-2"></i>@Localizer["Email"]</label>
+                    <input asp-for="Email" class="form-control" autocomplete="email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-check-label mb-3">
+                    <label for="Password"><i class="bi bi-lock-fill me-2"></i>@Localizer["Password"]</label>
+                    <input asp-for="Password" type="password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                
+
+               
+
+                <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">
+                    Register
+                </button>
+            </form>
+
+           
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        background: #fff;
+        color: #333;
+        border: thin;
+        margin: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-floating label {
+        color: #666;
+    }
+
+    .form-floating .form-control {
+        border-radius: 10px;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+        .btn-primary:hover {
+            background: #2575fc;
+        }
+
+    .register-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+</style>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

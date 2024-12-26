@@ -1,0 +1,147 @@
+﻿@model Data_Access.ViewModels.InvoiceVM
+
+<h2 class="text-center mb-4">Create Invoice</h2>
+<form id="invoiceForm" asp-action="Create" method="post">
+    <div class="form-group row">
+        <label for="Date" class="col-sm-1 col-form-label">Date</label>
+        <div class="col-sm-4">
+            <input type="date" asp-for="Date" min="@DateTime.Now.ToString("yyyy-MM-dd")" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" />
+            <span asp-validation-for="Date" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div id="invoiceItems" class="mt-4">
+        <h3>Items</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Items != null && Model.Items.Any())
+                {
+                    @for (int i = 0; i < Model.Items.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                <input asp-for="Items[i].Product" class="form-control" placeholder="Enter product name" />
+                                <span asp-validation-for="Items[i].Product" class="text-danger"></span>
+                            </td>
+                            <td>
+                                <input asp-for="Items[i].Quantity" type="number" class="form-control quantity" placeholder="Quantity" />
+                                <span asp-validation-for="Items[i].Quantity" class="text-danger"></span>
+                            </td>
+                            <td>
+                                <input asp-for="Items[i].Price" type="number" step="0.01" class="form-control price" placeholder="Price" />
+                                <span asp-validation-for="Items[i].Price" class="text-danger"></span>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control item-total" readonly value="0.00" />
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger remove-row">Remove</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+        <button type="button" class="btn btn-primary" id="addRow">Add Item</button>
+    </div>
+
+    <div class="form-group mt-4">
+        <label for="TotalAmount">Total Amount:</label>
+        <input type="text" asp-for="TotalAmount" id="totalAmount" class="form-control" readonly value="0.00" />
+    </div>
+
+    <div class="text-danger" id="error-message" style="display: none;">You must add at least one item to the invoice.</div>
+
+    <div class="form-group mt-4">
+        <button type="submit" class="btn btn-success btn-block">Save</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            let rowIndex = @Model.Items.Count;
+
+            // Function to recalculate total for each item
+            function recalculateItemTotal(row) {
+                const quantity = parseFloat(row.find('.quantity').val()) || 0;
+                const price = parseFloat(row.find('.price').val()) || 0;
+                const total = quantity * price;
+                row.find('.item-total').val(total.toFixed(2));
+            }
+
+            // Function to recalculate total amount
+            function recalculateTotalAmount() {
+                let totalAmount = 0;
+                $('.item-total').each(function () {
+                    totalAmount += parseFloat($(this).val()) || 0;
+                });
+                $('#totalAmount').val(totalAmount.toFixed(2));
+            }
+
+            // Add new row dynamically
+            $('#addRow').click(function () {
+                const newRow = `
+                    <tr>
+                        <td>
+                            <input name="Items[${rowIndex}].Product" class="form-control" placeholder="Enter product name" />
+                        </td>
+                        <td>
+                            <input name="Items[${rowIndex}].Quantity" type="number" class="form-control quantity" placeholder="Quantity" />
+                        </td>
+                        <td>
+                            <input name="Items[${rowIndex}].Price" type="number" step="0.01" class="form-control price" placeholder="Price" />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control item-total" readonly value="0.00" />
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger remove-row">Remove</button>
+                        </td>
+                    </tr>`;
+                $('#invoiceItems tbody').append(newRow);
+                rowIndex++;
+            });
+
+            // Update item total when quantity or price changes
+            $('#invoiceItems').on('input', '.quantity, .price', function () {
+                const row = $(this).closest('tr');
+                recalculateItemTotal(row);
+                recalculateTotalAmount();
+            });
+
+            // Remove a row dynamically
+            $('#invoiceItems').on('click', '.remove-row', function () {
+                $(this).closest('tr').remove();
+                recalculateTotalAmount();
+            });
+
+            // Validate form before submission
+            $('#invoiceForm').on('submit', function (e) {
+                const rowCount = $('#invoiceItems tbody tr').length;
+                if (rowCount === 0) {
+                    e.preventDefault();
+                    $('#error-message').show();
+                } else {
+                    $('#error-message').hide();
+                }
+            });
+
+            // Initial calculation for existing rows
+            $('#invoiceItems tbody tr').each(function () {
+                recalculateItemTotal($(this));
+            });
+            recalculateTotalAmount();
+        });
+    </script>
+}
