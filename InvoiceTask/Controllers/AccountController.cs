@@ -1,7 +1,7 @@
 ﻿using Business_Logic.Services;
 using Business_Logic.Services.IServices;
 using Data_Access.Models;
-using InvoiceTask.Utility;
+using Business_Logic.Utility;
 using InvoiceTask.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
