@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
 using InvoiceTask.Loclization;
+using InvoiceTask.Utility;
 
 namespace InvoiceTask
 {
@@ -46,6 +47,7 @@ namespace InvoiceTask
             builder.Services.AddRazorPages();
             builder.Services.AddDbContext<ApplicationDbContext>(options => options
            .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.Configure<GoogleRecaptchaSettings>(builder.Configuration.GetSection("GoogleRecaptcha"));
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IInvoiceService,InvoiceService>();

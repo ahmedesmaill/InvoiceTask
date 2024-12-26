@@ -28,5 +28,6 @@
   "actions": "Actions",
   "show_details": "Show Details",
   "edit": "Edit",
-  "delete": "Delete"
+  "delete": "Delete",
+  "Manage_Invoice": "Manage Invoices"
 }

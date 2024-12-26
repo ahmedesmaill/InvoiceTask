@@ -23,7 +23,7 @@ namespace InvoiceTask.Controllers
         {
             var model = new InvoiceVM
             {
-                Items = new List<InvoiceItemVM>() // Ensure that Items is initialized
+                Items = new List<InvoiceItemVM>() 
             };
             return View(model);
         }

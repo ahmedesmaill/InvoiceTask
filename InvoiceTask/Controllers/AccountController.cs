@@ -1,43 +1,60 @@
 ﻿using Business_Logic.Services;
 using Business_Logic.Services.IServices;
 using Data_Access.Models;
+using InvoiceTask.Utility;
+using InvoiceTask.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace InvoiceTask.Controllers
 {
     public class AccountController : Controller
     {
         private readonly IUserService userService;
+        private readonly IConfiguration configuration;
 
-        public AccountController(IUserService userService)
+        public AccountController(IUserService userService,IConfiguration configuration)
         {
             this.userService = userService;
+            this.configuration = configuration;
         }
-        public IActionResult Login() => View();
-
+        public IActionResult Login()
+        {
+            return View();
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(string username, string password)
+        public async Task<IActionResult> Login(LoginVM model)
         {
-            var user = userService.Authenticate(username, password);
+            var captchaResponse = model.RecaptchaToken ;
+
+            // Verify the CAPTCHA response
+            if (string.IsNullOrEmpty(captchaResponse))
+            {
+                ModelState.AddModelError("", "Please complete the CAPTCHA.");
+                return View(model);
+            }
+            string secretkey = configuration["GoogleRecaptcha:SecretKey"];
+            bool seccess = await RecaptchaService.verifyReCaptcha(captchaResponse, secretkey);
+            if (!seccess)
+            {
+                ModelState.AddModelError("", "Invalid CAPTCHA. Please try again.");
+                       return View(model);
+            }
+            // Authenticate the user
+            var user = userService.Authenticate(model.Username, model.Password);
             if (user == null)
             {
-                ModelState.AddModelError("", "Invalid User.");
-                return View(user);
+                ModelState.AddModelError("", "Invalid username or password.");
+                return View(model);
             }
-            //if (!user.IsVerified)
-            //{
-            //    ModelState.AddModelError("", "Please verify your email first.");
-            //    return View(user);
 
-            //}
+            // Set session or other user-specific data
+            HttpContext.Session.SetString("UserLoggedIn", user.Username);
 
-
-             HttpContext.Session.SetString("UserLoggedIn", user.Username);
-    
             return RedirectToAction("Index", "Home");
-         
         }
+
         public IActionResult Register() => View();
 
         [HttpPost]

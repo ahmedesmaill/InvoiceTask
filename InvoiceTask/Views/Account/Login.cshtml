@@ -1,22 +1,41 @@
 ﻿@using Data_Access.Models
+@using InvoiceTask.ViewModels
 @using Microsoft.AspNetCore.Mvc.Localization
-@model User
+@model LoginVM
 
+@inject IConfiguration configuration
 @inject IViewLocalizer Localizer
+@{
+    var sitekey = configuration["GoogleRecaptcha:SiteKey"];
+}
 @{
     ViewData["Title"] = @Localizer["Login"];
 }
 
+<script type="text/javascript">
+    var onloadCallback = function() {
+       grecaptcha.render('html_element', {
+          'sitekey' : '@sitekey'
+        });
+    };
+    function onSubmit(event){
+       var token=grecaptcha.getResponse();
+       document.getElementById("recaptchaTokenInputId").value=token
+    }
+</script>
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+        async defer>
+</script>
 <h1 class="text-center text-primary mb-4">@ViewData["Title"]</h1>
 
 <div class="container">
-    <div class="row justify-content-center ">
+    <div class="row justify-content-center">
         <div class="col-md-6 login-container">
-            <form id="loginForm" method="post" class="needs-validation" novalidate>
+            <form id="loginForm" method="post" class="needs-validation" onsubmit="onSubmit(event)" novalidate>
                 @Html.AntiForgeryToken()
-
+                <input type="hidden" id="recaptchaTokenInputId" asp-for="RecaptchaToken" />
                 <div class="text-center mb-3">
-                    <h2 class="login-heading"> @Localizer["Welcome"]</h2>
+                    <h2 class="login-heading">@Localizer["Welcome"]</h2>
                     <p class="login-subheading">@Localizer["LoginNav"]</p>
                 </div>
 
@@ -34,10 +53,17 @@
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
 
+                <!-- Google reCAPTCHA  -->
+                <div class="row mb-3">
+                    <div class="">
+                        <div id="html_element"></div>
+                        <hr />
+                    </div>
+                </div>
+
                 <button type="submit" class="btn btn-primary w-100 btn-lg login-btn">@Localizer["Login"]</button>
 
                 <div class="text-center mt-3">
-                    
                     <br />
                     <a class="link-secondary" asp-area="" asp-controller="Account" asp-action="Register">@Localizer["RegisterNav"]</a>
                 </div>
@@ -46,7 +72,7 @@
     </div>
 </div>
 
-
 @section Scripts {
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <partial name="_ValidationScriptsPartial" />
 }

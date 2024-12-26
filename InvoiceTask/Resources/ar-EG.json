@@ -28,5 +28,6 @@
   "actions": "الأوامر",
   "show_details": "عرض التفاصيل",
   "edit": "تعديل",
-  "delete": "حذف"
+  "delete": "حذف",
+  "Manage_Invoice": "إدارة الفواتير"
 }
