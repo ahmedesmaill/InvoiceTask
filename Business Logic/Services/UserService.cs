@@ -14,12 +14,14 @@ namespace Business_Logic.Services
         {
             private readonly IUserRepository userRepository;
             private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IEmailService emailService;
 
-            public UserService(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)
-                {
-                this.userRepository = userRepository;
-                this.httpContextAccessor = httpContextAccessor;
-            }
+        public UserService(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor,IEmailService emailService)
+        {
+            this.userRepository = userRepository;
+            this.httpContextAccessor = httpContextAccessor;
+            this.emailService = emailService;
+        }
 
             public User? Authenticate(string username, string password)
             {
@@ -37,7 +39,12 @@ namespace Business_Logic.Services
                 user.VerificationToken = Guid.NewGuid().ToString();
                 userRepository.Create(user);
                 userRepository.Commit();
-            }
+                string verificationUrl = $"https://yourwebsite.com/verify?token={user.VerificationToken}";
+                string subject = "Account Verification";
+                string message = $"Please click <a href='{verificationUrl}'>here</a> to verify your account.";
+                emailService.SendEmailAsync(user.Email, subject, message).Wait();
+        }
+            
         
 
 

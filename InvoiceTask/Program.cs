@@ -52,7 +52,7 @@ namespace InvoiceTask
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IInvoiceService,InvoiceService>();
-
+            builder.Services.AddScoped<IEmailService, EmailService>();
             // Register repositories.
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
