@@ -31,7 +31,8 @@ namespace InvoiceTask
                 options.DataAnnotationLocalizerProvider = (type, factory) =>
                 factory.Create(typeof(JsonStringLocalizerFactory));
             });
-            
+
+            // Configure localization options.
             builder.Services.Configure<RequestLocalizationOptions>(options =>
             {
                 var supportedCultures = new[]
@@ -39,7 +40,7 @@ namespace InvoiceTask
                     new CultureInfo("en-US"),
                     new CultureInfo("ar-EG"),
                 };
-
+                // Set default culture and supported cultures.
                 options.DefaultRequestCulture = new RequestCulture(culture: supportedCultures[0], uiCulture: supportedCultures[0]);
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
@@ -52,6 +53,7 @@ namespace InvoiceTask
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IInvoiceService,InvoiceService>();
 
+            // Register repositories.
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
             builder.Services.AddScoped<IInvoiceDetailRepository, InvoiceDetailRepository>();
@@ -77,7 +79,8 @@ namespace InvoiceTask
             app.UseStaticFiles();
 
             app.UseRouting();
-            
+
+            // Configure localization settings.
             var supportedCultures = new[] { "en-US", "ar-EG"};
             var localizationOptions = new RequestLocalizationOptions()
                 .SetDefaultCulture(supportedCultures[0])

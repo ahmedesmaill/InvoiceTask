@@ -38,16 +38,9 @@ namespace Business_Logic.Services
                 userRepository.Create(user);
                 userRepository.Commit();
             }
-        //public void Logout(string username)
-        //{
-        //    var user = _userRepository.GetOne(expression:u => u.Username == username);
-        //    if (user != null)
-        //    {
-        //        user.VerificationToken = null;
-        //        _userRepository.Edit(user);
-        //        _userRepository.Commit();
-        //    }
-        //}
+        
+
+
             public void Logout()
             {
                 var username = httpContextAccessor.HttpContext.User?.Identity?.Name;

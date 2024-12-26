@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
 
 namespace InvoiceTask.Loclization
 {
@@ -32,6 +34,8 @@ namespace InvoiceTask.Loclization
                     : actualValue;
             }
         }
+
+        // all localized strings from the JSON file
         public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
         {
             var filePath = $"Resources/{Thread.CurrentThread.CurrentCulture.Name}.json";
@@ -53,6 +57,7 @@ namespace InvoiceTask.Loclization
         }
 
 
+        //  method to fetch a localized string for a specific key
         private string GetString(string key)
         {
             var filePath = $"Resources/{Thread.CurrentThread.CurrentCulture.Name}.json";
@@ -73,9 +78,11 @@ namespace InvoiceTask.Loclization
 
                 return result;
             }
-
             return string.Empty;
         }
+
+
+        //method to fetch a value from a JSON file for a specific key
         private string GetValueFromJSON(string propertyName, string filepath)
         {
             if (string.IsNullOrWhiteSpace(propertyName) || string.IsNullOrEmpty(filepath))

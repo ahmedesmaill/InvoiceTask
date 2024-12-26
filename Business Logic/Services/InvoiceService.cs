@@ -22,11 +22,17 @@ namespace Business_Logic.Services
             this.detailRepository = detailRepository;
         }
 
-       
+
+
+        // Get all invoices, including their details
         public IEnumerable<Invoice> GetAllInvoices()
         {
             return invoiceRepository.Get(includeProps:[e=>e.InvoiceDetails]).ToList();
         }
+         
+
+
+        // Get an invoice by its ID, including details
         public Invoice? GetInvoiceById(int id)
         {
             var invoice = invoiceRepository.GetOne(includeProps:[e =>e.InvoiceDetails],expression: i => i.InvoiceId == id);
@@ -45,12 +51,20 @@ namespace Business_Logic.Services
                 }).ToList()
             };
         }
+
+
+
         public Invoice? GetInvoiceDetailById(int id)
         {
             var invoiceDetail = invoiceRepository.GetOne(includeProps:[ e => e.InvoiceDetails] , expression: i => i.InvoiceId == id);
             if (invoiceDetail == null) return null;
             return invoiceDetail;
         }
+
+
+
+
+        // Create a new invoice with its details
         public void CreateInvoice(InvoiceVM invoiceVM)
         {
             var invoice = new Invoice
@@ -69,6 +83,9 @@ namespace Business_Logic.Services
             invoiceRepository.Commit();
         }
 
+
+
+        // Update an existing invoice with new data
         public void UpdateInvoice(InvoiceVM invoiceVM)
         {
             if (invoiceVM.Items == null || !invoiceVM.Items.Any())
@@ -104,7 +121,7 @@ namespace Business_Logic.Services
         }
 
 
-
+        // Delete an invoice
         public void DeleteInvoice(int id)
         {
             var invoice = invoiceRepository.GetOne(expression: i => i.InvoiceId == id);

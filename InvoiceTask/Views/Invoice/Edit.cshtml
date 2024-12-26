@@ -71,6 +71,9 @@
 </form>
 
 @section Scripts {
+   
+    <partial name="_ValidationScriptsPartial.cshtml"></partial>
+
     <script>
         $(document).ready(function () {
             let rowIndex = @Model.Items.Count;

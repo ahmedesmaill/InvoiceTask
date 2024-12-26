@@ -13,15 +13,22 @@ namespace InvoiceTask.Controllers
         private readonly IUserService userService;
         private readonly IConfiguration configuration;
 
+        // Constructor to inject dependencies
         public AccountController(IUserService userService,IConfiguration configuration)
         {
             this.userService = userService;
             this.configuration = configuration;
         }
+
+
+        // Display the login page
         public IActionResult Login()
         {
             return View();
         }
+
+
+        // Handle login post 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginVM model)
@@ -55,9 +62,14 @@ namespace InvoiceTask.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+
+        // Display the registration page
         public IActionResult Register() => View();
 
+
+        // Handle user registration
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Register(User user)
         {
             if (ModelState.IsValid)
@@ -76,19 +88,9 @@ namespace InvoiceTask.Controllers
             }
             return View(user);
         }
-        
-        public IActionResult VerifyEmail(string token)
-        {
-            try
-            {
-                userService.VerifyEmail(token);
-                return RedirectToAction("Login");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+
+
+        // Handle user logout
         public IActionResult Logout()
         {
             userService.Logout();
